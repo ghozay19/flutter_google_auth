@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_google_auth/api.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   @override
@@ -24,9 +27,30 @@ class _HomeState extends State<Home> {
     );
 
     final FirebaseUser user = await _auth.signInWithCredential(credential);
+    daftar(user.email, user.displayName);
+
+
     print("signed in " + user.email );
     return user;
   }
+
+  String password = "apaaja";
+  daftar(String email, String nama) async {
+    final response = await http.post(BaseUrl.daftar, body: {
+      "username": email,
+      "password": password,
+      "nama": nama,
+    });
+    final data = jsonDecode(response.body);
+    int value = data['value'];
+    String message = data['message'];
+    if (value == 1) {
+      print(message);
+    } else {
+      print(message);
+    }
+  }
+
 
   signOut() {
     _googleSignIn.signOut();
